@@ -35,7 +35,7 @@ class SalaViewSet(ModelViewSet):
 
             return Response({"Info": "Sala criada!", "data": serializer_saida.data}, status=status.HTTP_201_CREATED)
         else:
-            return Response({"Info": "Falha ao tentar cadastrar a sala!"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Info": "Falha ao tentar cadastrar a sala!"}, status=status.HTTP_409_CONFLICT)
 
 class ReservaViewSet(ModelViewSet):
     serializer_class = ReservaSerializer
@@ -45,6 +45,7 @@ class ReservaViewSet(ModelViewSet):
     def create(self, request):
         serializer = ReservaSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         sala_numero = serializer.validated_data['sala_numero']
         hora_inicio = serializer.validated_data['hora_inicio']
         hora_fim = serializer.validated_data['hora_fim']
@@ -62,4 +63,4 @@ class ReservaViewSet(ModelViewSet):
             serializer_saida = ReservaSerializer(nova_reserva)
             return Response({"Info": "Reserva cadastrada!", "data":serializer_saida.data}, status=status.HTTP_201_CREATED)
         else:
-            return Response({"Info": "Falha ao tentar cadastrar reserva!"},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Info": "Falha ao tentar cadastrar reserva!"},status=status.HTTP_409_CONFLICT)
