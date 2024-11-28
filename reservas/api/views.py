@@ -3,14 +3,14 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 
 from reservas.api.serializers import ReservaSerializer, SalaSerializer
 from reservas.models import ReservaModel, SalaModel
 
 class SalaViewSet(ModelViewSet):
     serializer_class = SalaSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminUser]
     queryset = SalaModel.objects.all()
 
     def create(self, request):
@@ -39,7 +39,7 @@ class SalaViewSet(ModelViewSet):
 
 class ReservaViewSet(ModelViewSet):
     serializer_class = ReservaSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = ReservaModel.objects.all()
     
     def create(self, request):

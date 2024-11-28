@@ -19,7 +19,7 @@ from django.urls import path
 from rest_framework.routers import SimpleRouter
 from rest_framework.authtoken import views
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from users.api.views import UserProfileExampleViewSet
+from users.api.views import ProfessorViewSet, UserProfileExampleViewSet
 from reservas.api.views import ReservaViewSet, SalaViewSet
 
 router = SimpleRouter()
@@ -27,6 +27,7 @@ router = SimpleRouter()
 router.register("users", UserProfileExampleViewSet, basename="users")
 router.register("salas", SalaViewSet, basename="salas")
 router.register("reservas", ReservaViewSet, basename="reservas")
+router.register("professores", ProfessorViewSet, basename="professores")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
