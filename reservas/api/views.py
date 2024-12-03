@@ -1,5 +1,6 @@
 from typing import Any
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -7,6 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 
 from reservas.api.serializers import ReservaSerializer, SalaSerializer
 from reservas.models import ReservaModel, SalaModel
+from users.api.permissions import IsProfessor
 
 class SalaViewSet(ModelViewSet):
     serializer_class = SalaSerializer
@@ -32,14 +34,22 @@ class SalaViewSet(ModelViewSet):
             )
 
             serializer_saida = SalaSerializer(nova_sala)
-
             return Response({"Info": "Sala criada!", "data": serializer_saida.data}, status=status.HTTP_201_CREATED)
         else:
             return Response({"Info": "Falha ao tentar cadastrar a sala!"}, status=status.HTTP_409_CONFLICT)
+        
+    #from rest_framework.decorators import action
+    #http://localhost:8000/salas/buscar/
+    @action(methods=['get'],detail=False,url_path="buscar")
+    def buscar_sala(self, request):
+        busca = SalaModel.objects.filter(bloco=2)
+        serializer = SalaSerializer(busca, many=True)
+        return Response({"Info":"Lista de Salas", "data":serializer.data}, status=status.HTTP_200_OK)
+
 
 class ReservaViewSet(ModelViewSet):
     serializer_class = ReservaSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsProfessor | IsAdminUser]
     queryset = ReservaModel.objects.all()
     
     def create(self, request):
