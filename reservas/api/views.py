@@ -1,3 +1,5 @@
+import logging
+
 from typing import Any
 from rest_framework import status
 from rest_framework.decorators import action
@@ -10,9 +12,11 @@ from reservas.api.serializers import ReservaSerializer, SalaSerializer
 from reservas.models import ReservaModel, SalaModel
 from users.api.permissions import IsProfessor
 
+logger = logging.getLogger("reservas")
+
 class SalaViewSet(ModelViewSet):
     serializer_class = SalaSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [AllowAny]
     queryset = SalaModel.objects.all()
 
     def create(self, request):
@@ -34,8 +38,10 @@ class SalaViewSet(ModelViewSet):
             )
 
             serializer_saida = SalaSerializer(nova_sala)
+            logger.info("Sala Criada!")
             return Response({"Info": "Sala criada!", "data": serializer_saida.data}, status=status.HTTP_201_CREATED)
         else:
+            logger.error("A sala já está cadastrada.")
             return Response({"Info": "Falha ao tentar cadastrar a sala!"}, status=status.HTTP_409_CONFLICT)
         
     #from rest_framework.decorators import action
@@ -49,7 +55,7 @@ class SalaViewSet(ModelViewSet):
 
 class ReservaViewSet(ModelViewSet):
     serializer_class = ReservaSerializer
-    permission_classes = [IsProfessor | IsAdminUser]
+    permission_classes = [AllowAny]
     queryset = ReservaModel.objects.all()
     
     def create(self, request):
