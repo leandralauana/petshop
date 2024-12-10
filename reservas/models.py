@@ -4,9 +4,9 @@ from django.db import models
 
 class SalaModel(models.Model):
 
-    numero = models.IntegerField(min=1)
-    bloco = models.IntegerField(min=1)
-    capacidade = models.IntegerField(min=10)
+    numero = models.IntegerField()
+    bloco = models.IntegerField()
+    capacidade = models.IntegerField()
     tipo = models.CharField(max_length=20)
     disponivel = models.BooleanField(default=True)
 
