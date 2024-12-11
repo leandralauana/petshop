@@ -1,6 +1,6 @@
 import logging
 from django.contrib.auth.models import User, Group
-from rest_framework.exceptions import PermissionDenied,NotAuthenticated
+from rest_framework.exceptions import PermissionDenied, NotAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 from rest_framework import status
@@ -11,18 +11,22 @@ from users.models import Professor, UserProfileExample
 
 logger = logging.getLogger("reservas")
 
+
 class UserProfileExampleViewSet(ModelViewSet):
+    """ViewSet de exemplo para manipulação de perfis de Usuários"""
     serializer_class = UserProfileExampleSerializer
     permission_classes = [AllowAny]
     queryset = UserProfileExample.objects.all()
     http_method_names = ['get', 'put']
 
+
 class ProfessorViewSet(ModelViewSet):
+    """ViewSet para manipulação das entidades do tipo Professor"""
     serializer_class = ProfessorSerializer
     permission_classes = [AllowAny]
     queryset = Professor.objects.all()
 
-    def create(self, request):
+    def create(self, request, *args, **kwargs):
         serializer = ProfessorCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -42,13 +46,24 @@ class ProfessorViewSet(ModelViewSet):
             )
 
             serializer_saida = ProfessorSerializer(novo_professor)
-            return Response({"Info": "Cadastro realizado!", "data":serializer_saida.data}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"Info": "Cadastro realizado!",
+                 "data": serializer_saida.data},
+                status=status.HTTP_201_CREATED)
         except ValueError:
             logger.error("Entrada inválida.")
-            return Response({"Erro": "Dados inválidos!"}, status=status.HTTP_409_CONFLICT)
+            return Response(
+                {"Erro": "Dados inválidos!"},
+                status=status.HTTP_409_CONFLICT)
         except KeyError:
-            return Response({"Erro": "Algum dado faltando ou errado."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"Erro": "Algum dado faltando ou errado."},
+                status=status.HTTP_400_BAD_REQUEST)
         except PermissionDenied:
-            return Response({"Erro": "Você não possui permissões para isso."}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"Erro": "Você não possui permissões para isso."},
+                status=status.HTTP_403_FORBIDDEN)
         except NotAuthenticated:
-            return Response({"Erro": "Usuário não autenticado."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"Erro": "Usuário não autenticado."},
+                status=status.HTTP_401_UNAUTHORIZED)
