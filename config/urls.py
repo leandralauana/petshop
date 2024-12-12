@@ -29,6 +29,7 @@ router.register("salas", SalaViewSet, basename="salas")
 router.register("reservas", ReservaViewSet, basename="reservas")
 router.register("professores", ProfessorViewSet, basename="professores")
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/token-auth/", views.obtain_auth_token),
